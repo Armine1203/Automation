@@ -28,6 +28,7 @@ public class Tests {
     public void quitDriver(){
         chromeDriver.quit();
     }
+
     @Test
     @Tag("Bags")
     public void test1() throws InterruptedException {
@@ -75,15 +76,17 @@ public class Tests {
     public void test2() throws InterruptedException {
 
       //hover կանի Clothing-ի վրա, հետո կընտրի Men's-ի T-Shirt-ը ու քլիք կանի
-
         WebElements.navigateToCategory(chromeDriver, actions, "Clothing", "Men's", "T-Shirts");
         Thread.sleep(5000);
+
         WebElement colorTab = chromeDriver.findElement(Selectors.SELECTOR_COLOR_TAB);
 
-        WebElement color_brown = chromeDriver.findElement(Selectors.SELECTOR_BROWN);
-        WebElements.filterMenClothes(colorTab, color_brown);
-
+        colorTab.click();
+        WebElements.filterMenClothesBasedOnColor(chromeDriver, "brown");
+        System.out.println("passed");
         Thread.sleep(5000);
+
+
         WebElement countOfFilteredItems = chromeDriver.findElement(Selectors.COUNT_OF_SPECIAL_COLOR_TSHIRTS);
         String expectedText = countOfFilteredItems.getText().replaceAll("[^0-9]", "");
         int expectedCount = Integer.parseInt(expectedText);
@@ -100,14 +103,15 @@ public class Tests {
         Thread.sleep(5000);
         WebElement removeFilter = chromeDriver.findElement(Selectors.SELECTOR_REMOVE_FILTER);
         removeFilter.click();
-
+        Thread.sleep(8000);
 
         List<WebElement> allFilters = chromeDriver.findElements(By.xpath("//*[@id='searchSelectedFilters']//a"));
+        allFilters.stream().forEach(element -> System.out.println(element.getText()));
         boolean isBrownRemoved = allFilters.stream().noneMatch(e -> e.getText().equals("Brown"));
         Assertions.assertTrue(isBrownRemoved, "Brown filter is still available.");
 
-        WebElement brownFilterUnselected = chromeDriver.findElement(By.xpath("//label[@for='filterColor_Brown']//input[@type='checkbox']"));
+        WebElement brownFilterUnselected = chromeDriver.findElement(By.xpath("//a[contains(@href, 'men-brown-t-shirts')]/parent::li[@class='']"));
         Assertions.assertFalse(brownFilterUnselected.isSelected(), "Brown filter is still selected.");
-
+        System.out.println("Done");
     }
 }

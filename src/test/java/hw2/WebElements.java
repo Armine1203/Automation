@@ -23,10 +23,29 @@ public class WebElements {
     }
 
     //2
-    public static void filterMenClothes(WebElement tabs, WebElement checkbox) throws InterruptedException {
-        tabs.click();
-        Thread.sleep(3000);
-        checkbox.click();
-    }
+
+       public static void filterMenClothesBasedOnColor(WebDriver driver, String color) throws InterruptedException {
+        WebElement colorElement = driver.findElement(By.xpath("//a[contains(@href, 'men-" + color.toLowerCase() + "-t-shirts')]"));
+        colorElement.click();
+       }
+
+//    public static void main(String[] args) {
+//        // Set up the WebDriver (assuming you're using ChromeDriver)
+//        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+//        WebDriver chromeDriver = new ChromeDriver();
+//
+//        // Navigate to the page
+//        chromeDriver.get("your-web-page-url");
+//
+//        // Select the color tab (optional, if needed)
+//        WebElement colorTab = chromeDriver.findElement(SELECTOR_COLOR_TAB);
+//
+//        // Example for selecting and checking "brown"
+//        WebElement colorBrown = selectColor(chromeDriver, "brown");
+//        System.out.println("Brown color selected: " + isColorSelected(chromeDriver, "brown"));
+//
+//        // Close the browser
+//        chromeDriver.quit();
+//    }
 
 }
