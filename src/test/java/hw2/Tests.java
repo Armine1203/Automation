@@ -25,7 +25,7 @@ public class Tests {
     }
 
     @AfterEach
-    public void quitDriver(){
+    public void quitDriver() {
         System.out.println("PostTest");
         chromeDriver.quit();
     }
@@ -33,19 +33,19 @@ public class Tests {
     @Test
     @Tag("Bags")
     public void test1() throws InterruptedException {
-        WebElements.navigateToCategory(chromeDriver,actions,"Bags","All Bags","Luggage");
+        //2-րդ պունկտի համար ցանկալի կլինի, որ գրեք մեթոդ, որին կփոխանցեք թաբի ու կատեգորիայի,
+        // ինչպես նաև քլիք արվող տարբերակի անունը, ու ինքը կաշխատի ցանկացած վալիդ կոմբինացիայի համար։
+
+        WebElements.navigateToCategory(chromeDriver, "Bags", "All Bags", "Luggage");
 
         Thread.sleep(5000);
         List<WebElement> products = chromeDriver.findElements(Selectors.SELECTOR_PRODUCTS_LIST);
-        Thread.sleep(5000);
 
         for (WebElement product : products) {//ԽՆԴԻՐ ՈՒՆԵՄ ԷՍՏԵՂ ՄԵՆԱԿ ՄԻ ՏԱՐՐԻ ՎՐԱՅՈՎԱ ԱՆՑՆՈՒՄ
             String productName = product.findElement(Selectors.SELECTOR_PRODUCT_NAME).getText();
             String productPrice = product.findElement(Selectors.SELECTOR_PRODUCT_PRICE).getText();
             System.out.println(productName + " costs " + productPrice);
         }
-//2-րդ պունկտի համար ցանկալի կլինի, որ գրեք մեթոդ, որին կփոխանցեք թաբի ու կատեգորիայի,
-// ինչպես նաև քլիք արվող տարբերակի անունը, ու ինքը կաշխատի ցանկացած վալիդ կոմբինացիայի համար։
 
         Random random = new Random();
         int randomNumber = random.nextInt(products.size());
@@ -69,24 +69,27 @@ public class Tests {
 
         WebElement signIn = chromeDriver.findElement(Selectors.SELECTOR_SIGN_IN);
         System.out.println("Sign in: " + signIn.getDomProperty("href"));
-        chromeDriver.quit();
     }
 
     @Test
     @Tag("Clothing")
     public void test2() throws InterruptedException {
 
-      //hover կանի Clothing-ի վրա, հետո կընտրի Men's-ի T-Shirt-ը ու քլիք կանի
-        WebElements.navigateToCategory(chromeDriver, actions, "Clothing", "Men's", "T-Shirts");
+        //hover կանի Clothing-ի վրա, հետո կընտրի Men's-ի T-Shirt-ը ու քլիք կանի
+        WebElements.navigateToCategory(chromeDriver, "Clothing", "Men's", "T-Shirts");
         Thread.sleep(5000);
 
+        //Հետո expand կանի ձախի ֆիլտրներից Color-ը ու քլիք անի Brown-ի վրա։
+        // ունիվերսալ method
         WebElement colorTab = chromeDriver.findElement(Selectors.SELECTOR_COLOR_TAB);
-
         colorTab.click();
+
         WebElements.filterMenClothesBasedOnColor(chromeDriver, "brown");
         System.out.println("passed");
         Thread.sleep(5000);
 
+        // Validate եք անում, որ տվյալ ֆիլտրի կողքի գրված քանակությունը ու գտնված
+        // Item-ների քանակը նույննա։ Քանակը էնա, ինչ item-նրի վերևի ձախ անկյունում գրվածա` {n} items found
 
         WebElement countOfFilteredItems = chromeDriver.findElement(Selectors.COUNT_OF_SPECIAL_COLOR_TSHIRTS);
         String expectedText = countOfFilteredItems.getText().replaceAll("[^0-9]", "");
@@ -99,12 +102,18 @@ public class Tests {
         int actualCount = Integer.parseInt(realText);
         System.out.println("Real count: " + actualCount);
 
-        Assertions.assertEquals(expectedCount,actualCount,"The filtered items result counts don't equals");
+        Assertions.assertEquals(expectedCount, actualCount, "The filtered items result counts don't equals");
 
         Thread.sleep(5000);
+
+        //Ֆիլտրված արդյունքների վերևում ֆիլտրեր են նշված ;ինելու, վրեքն էլ "X" button-ներով։ Այ ըտեղ քլիք եք անում Brown-ի "X"-ի վրա։
         WebElement removeFilter = chromeDriver.findElement(Selectors.SELECTOR_REMOVE_FILTER);
         removeFilter.click();
         Thread.sleep(8000);
+
+//        Validate եք անում, որ
+//        էդ ֆիլտրը էլ չկա
+//        Ձախի ֆիլտրերում Brown-ը unselect-ա էղել
 
         List<WebElement> allFilters = chromeDriver.findElements(By.xpath("//*[@id='searchSelectedFilters']//a"));
         allFilters.stream().forEach(element -> System.out.println(element.getText()));
